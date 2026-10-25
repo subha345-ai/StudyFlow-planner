@@ -1,0 +1,65 @@
+﻿# LOGS
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# NODE / REACT
+node_modules
+dist
+dist-ssr
+*.local
+
+# PYTHON / FLASK
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+build/
+develop-eggs/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ENV FILES (SECRET)
+.env
+.env.local
+.env.*.local
+*.env
+
+# EDITOR / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# DATABASE
+*.db
+*.sqlite
+*.sqlite3
+
+# CACHE
+.cache/
+.parcel-cache/
+.eslintcache
