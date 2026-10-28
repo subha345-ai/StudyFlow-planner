@@ -1,5 +1,5 @@
 // src/services/api.js
-const BASE_URL = L = 'const BASE_URL = import.meta.env.VITE_API_URL || ';
+const BASE_URL =  'https://studyflow-planner.onrender.com';
 
 const API = {
   get: async (url) => {
