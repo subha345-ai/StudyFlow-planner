@@ -9,7 +9,6 @@ function Pomodoro() {
   const [mode, setMode] = useState('focus')
   const [sessions, setSessions] = useState(0)
   const navigate = useNavigate()
-  const userName = localStorage.getItem('user_name') || 'Student'
 
   useEffect(() => {
     const userId = localStorage.getItem('user_id')
@@ -61,98 +60,19 @@ function Pomodoro() {
     setSeconds(breakTime * 60)
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_id')
-    localStorage.removeItem('user_name')
-    navigate('/')
-  }
-
   const progressPercent = mode === 'focus'
     ? ((focusTime * 60 - seconds) / (focusTime * 60)) * 100
     : ((breakTime * 60 - seconds) / (breakTime * 60)) * 100
 
   return (
-    <div className="min-h-screen bg-[#060b19] text-[#f0f5ff] font-inter relative overflow-hidden">
+    <div className="dashboard-shell water-flow-enabled relative isolate min-h-screen bg-transparent font-inter text-[#f0f5ff]">
       {/* ===== Background Gradients ===== */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 right-0 h-96 w-96 rounded-full bg-[#263c75]/20 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-[#502080]/15 blur-3xl" />
+        <div className="aurora-orb aurora-one" />
+        <div className="aurora-orb aurora-two" />
       </div>
 
-      {/* ===== TOP BAR ===== */}
-      <header className="relative z-10 flex h-[78px] items-center gap-4 border-b border-[#20365e] bg-[#080f22]/95 px-8 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <div className="grid h-[42px] w-[42px] place-items-center rounded-[13px] bg-gradient-to-br from-[#167fff] to-[#783fff] text-2xl shadow-[0_0_30px_#367aff80,0_0_60px_#367aff40]">
-            📚
-          </div>
-          <h1 className="text-[25px] font-extrabold tracking-tight">
-            Study<span className="text-[#65a1ff]">Flow</span>
-          </h1>
-        </div>
-
-        <div className="flex-1" />
-
-        <button className="grid h-[43px] w-[43px] place-items-center rounded-[13px] border border-[#20365e] bg-[#0d1730] text-lg text-white transition hover:border-[#347cff] hover:shadow-[0_0_20px_#347cff60]">
-          ♧
-        </button>
-
-        <div className="flex items-center gap-2 rounded-full border border-[#20365e] bg-[#0d1730] py-[7px] pl-[7px] pr-[14px] transition hover:border-[#347cff] hover:shadow-[0_0_20px_#347cff40]">
-          <div className="grid h-[34px] w-[34px] place-items-center rounded-full bg-gradient-to-br from-[#a34cff] to-[#356fff] shadow-[0_0_15px_#a34cff60]">
-            👤
-          </div>
-          <span className="text-sm font-medium">{userName}</span>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 rounded-[13px] border border-[#5b1f3a] bg-[#2a0f22] px-4 py-2 text-sm font-medium text-[#ff8aa8] transition hover:border-[#a33e65] hover:bg-[#3b1930] hover:shadow-[0_0_20px_#ff668540]"
-        >
-          🚪 Logout
-        </button>
-      </header>
-
-      <div className="relative z-10 flex min-h-[calc(100vh-78px)]">
-        {/* ===== SIDEBAR ===== */}
-        <aside className="hidden w-[258px] flex-col border-r border-[#20365e] bg-gradient-to-b from-[#080f22] to-[#09132a] p-6 lg:flex">
-          <nav className="grid gap-2">
-            {[
-              { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-              { icon: '🔍', label: 'Search', path: '/search' },
-              { icon: '🗓️', label: 'Schedule', path: '/schedule' },
-              { icon: '✅', label: 'Tasks', path: '/tasks' },
-              { icon: '⏱️', label: 'Pomodoro', path: '/pomodoro', active: true },
-              { icon: '📊', label: 'Progress', path: '/progress' },
-              { icon: '📚', label: 'Subjects', path: '/subjects' },
-              { icon: '🎓', label: 'Chapters', path: '/chapters' },
-            ].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(item.path)}
-                className={`flex min-h-[53px] items-center gap-4 rounded-[13px] border px-[17px] text-sm font-medium transition ${
-                  item.active
-                    ? 'border-transparent bg-gradient-to-r from-[#277cff] to-[#4938e9] font-bold text-white shadow-[0_0_20px_#277cff80,0_7px_23px_#245eff35]'
-                    : 'border-transparent text-[#a9bbdb] hover:border-[#243d67] hover:bg-[#132344] hover:text-white hover:shadow-[0_0_15px_#277cff40]'
-                }`}
-              >
-                <span className="w-[25px] text-center text-xl">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="mt-auto rounded-[18px] border border-[#24457a] bg-gradient-to-br from-[#10234a] to-[#171b43] p-[18px] shadow-[0_0_25px_#277cff20]">
-            <div className="mb-2 text-[29px]">🌱 ✨</div>
-            <strong className="block text-[15px] font-bold leading-relaxed">
-              Small steps.<br />Big dreams.
-            </strong>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#92a6c8]">
-              Stay consistent, keep going!
-            </p>
-          </div>
-        </aside>
-
-        {/* ===== MAIN CONTENT ===== */}
-        <main className="min-w-0 flex-1 p-8">
+      <main className="relative z-10 min-w-0 p-4 sm:p-6 lg:p-8">
           {/* Page Heading */}
           <div className="mb-6 flex items-center gap-4">
             <div className="grid h-[55px] w-[55px] place-items-center rounded-[17px] border border-[#3858a1] bg-gradient-to-br from-[#163d78] to-[#25205b] text-[27px] shadow-[0_0_25px_#315aff60,0_0_50px_#315aff30]">
@@ -160,7 +80,7 @@ function Pomodoro() {
             </div>
             <div>
               <h1 className="text-[31px] font-extrabold tracking-tight">
-                Pomodoro <span className="text-[#75a8ff]">Timer</span>
+                Pomodoro <span className="bg-gradient-to-r from-cyan-300 to-purple-400 bg-clip-text text-transparent">Timer</span>
               </h1>
               <p className="mt-1 text-[13px] text-[#92a6c8]">
                 Stay focused with the Pomodoro technique
@@ -170,12 +90,12 @@ function Pomodoro() {
 
           <div className="mx-auto max-w-2xl">
             {/* Mode Tabs */}
-            <div className="mb-6 flex gap-3">
+            <div className="dashboard-reveal mb-6 flex gap-3">
               <button
                 onClick={switchToFocus}
-                className={`flex-1 rounded-xl py-4 text-sm font-bold transition ${
+                className={`shine-button relative flex-1 rounded-xl py-4 text-sm font-bold transition hover:scale-[1.02] ${
                   mode === 'focus'
-                    ? 'bg-gradient-to-r from-[#347cff] to-[#9655ff] text-white shadow-[0_0_25px_#346bff80,0_0_50px_#346bff40]'
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-[0_0_25px_#346bff80,0_0_50px_#346bff40]'
                     : 'border border-[#2b4268] bg-[#0d1730] text-[#a9bbdb] hover:border-[#5788ed] hover:text-white hover:shadow-[0_0_20px_#346bff40]'
                 }`}
               >
@@ -183,7 +103,7 @@ function Pomodoro() {
               </button>
               <button
                 onClick={switchToBreak}
-                className={`flex-1 rounded-xl py-4 text-sm font-bold transition ${
+                className={`shine-button relative flex-1 rounded-xl py-4 text-sm font-bold transition hover:scale-[1.02] ${
                   mode === 'break'
                     ? 'bg-gradient-to-r from-[#39e6ae] to-[#0fcba1] text-[#06271e] shadow-[0_0_25px_#39e6ae80,0_0_50px_#39e6ae40]'
                     : 'border border-[#2b4268] bg-[#0d1730] text-[#a9bbdb] hover:border-[#5788ed] hover:text-white hover:shadow-[0_0_20px_#39e6ae40]'
@@ -194,7 +114,7 @@ function Pomodoro() {
             </div>
 
             {/* Timer Card */}
-            <div className="relative overflow-hidden rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830] to-[#0b1428] p-8 shadow-[0_0_40px_#347cff20,0_9px_30px_#00000013]">
+            <div className="interactive-card relative overflow-hidden rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830]/90 to-[#0b1428]/90 p-8 shadow-[0_0_40px_#347cff20,0_9px_30px_#00000013] backdrop-blur-xl">
               {/* Decorative side art */}
               <div className="pointer-events-none absolute left-4 top-1/2 hidden -translate-y-1/2 rotate-[-10deg] text-center text-[13px] italic text-[#5b6b9a] md:block">
                 Better Focus<br />Bigger Goals
@@ -248,21 +168,21 @@ function Pomodoro() {
                 {!isRunning ? (
                   <button
                     onClick={handleStart}
-                    className="rounded-xl bg-gradient-to-r from-[#347cff] to-[#9655ff] px-8 py-3 font-semibold text-white shadow-[0_0_25px_#346bff80,0_0_50px_#346bff40] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_35px_#346bff,0_0_70px_#346bff60]"
+                    className="shine-button relative rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 font-semibold text-white shadow-[0_0_25px_#346bff80,0_0_50px_#346bff40] transition hover:-translate-y-0.5 hover:scale-105 hover:brightness-110 hover:shadow-[0_0_35px_#346bff,0_0_70px_#346bff60]"
                   >
                     ▶ Start
                   </button>
                 ) : (
                   <button
                     onClick={handlePause}
-                    className="rounded-xl bg-gradient-to-r from-[#ffc857] to-[#ff9f43] px-8 py-3 font-semibold text-[#2a1a00] shadow-[0_0_25px_#ffc85780,0_0_50px_#ffc85740] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_35px_#ffc857,0_0_70px_#ffc85760]"
+                    className="shine-button relative rounded-xl bg-gradient-to-r from-[#ffc857] to-[#ff9f43] px-8 py-3 font-semibold text-[#2a1a00] shadow-[0_0_25px_#ffc85780,0_0_50px_#ffc85740] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_35px_#ffc857,0_0_70px_#ffc85760]"
                   >
                     ⏸ Pause
                   </button>
                 )}
                 <button
                   onClick={handleReset}
-                  className="rounded-xl border border-[#2b4268] bg-[#0d1730] px-8 py-3 font-semibold text-[#a9bbdb] transition hover:border-[#5788ed] hover:text-white hover:shadow-[0_0_20px_#347cff60]"
+                  className="shine-button relative rounded-xl border border-[#2b4268] bg-[#0d1730] px-8 py-3 font-semibold text-[#a9bbdb] transition hover:border-[#5788ed] hover:text-white hover:shadow-[0_0_20px_#347cff60]"
                 >
                   🔄 Reset
                 </button>
@@ -270,7 +190,7 @@ function Pomodoro() {
             </div>
 
             {/* Session Counter */}
-            <div className="mt-6 flex items-center gap-4 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830] to-[#0b1428] p-6 shadow-[0_0_30px_#0fcba115,0_9px_30px_#00000013]">
+            <div className="interactive-card mt-6 flex items-center gap-4 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830]/90 to-[#0b1428]/90 p-6 shadow-[0_0_30px_#0fcba115,0_9px_30px_#00000013] backdrop-blur-xl">
               <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[12px] bg-gradient-to-br from-[#0fcba1] to-[#0d9a83] text-xl shadow-[0_0_20px_#0fcba180,0_0_40px_#0fcba140]">
                 ✓
               </div>
@@ -286,7 +206,7 @@ function Pomodoro() {
             </div>
 
             {/* Settings */}
-            <div className="mt-6 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830] to-[#0b1428] p-6 shadow-[0_0_30px_#347cff15,0_9px_30px_#00000013]">
+            <div className="interactive-card mt-6 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830]/90 to-[#0b1428]/90 p-6 shadow-[0_0_30px_#347cff15,0_9px_30px_#00000013] backdrop-blur-xl">
               <h2 className="mb-4 text-base font-bold text-white">⚙️ Settings</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -325,7 +245,6 @@ function Pomodoro() {
             </div>
           </div>
         </main>
-      </div>
     </div>
   )
 }

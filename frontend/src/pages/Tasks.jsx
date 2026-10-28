@@ -16,7 +16,6 @@ function Tasks() {
   const [showDetails, setShowDetails] = useState(null)
   const navigate = useNavigate()
   const userId = localStorage.getItem('user_id')
-  const userName = localStorage.getItem('user_name') || 'Student'
 
   const showToast = (msg) => {
     setToast(msg)
@@ -109,12 +108,6 @@ function Tasks() {
     navigate(`/task/${taskId}`)
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_id')
-    localStorage.removeItem('user_name')
-    navigate('/')
-  }
-
   const total = tasks.length
   const completedCount = tasks.filter(t => t.completed).length
   const pendingCount = total - completedCount
@@ -145,92 +138,30 @@ function Tasks() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060b19] text-[#f0f5ff]" style={{
-      background: `radial-gradient(ellipse at 80% 0%, #263c7529, transparent 38%), radial-gradient(ellipse at 70% 80%, #50208017, transparent 35%), #060b19`
-    }}>
+    <div className="dashboard-shell water-flow-enabled relative isolate min-h-screen bg-transparent font-inter text-[#f0f5ff]">
 
-      {/* TOPBAR */}
-      <header className="sticky top-0 z-30 flex h-[78px] items-center gap-4 border-b border-[#20365e] bg-[#080f22ef] px-8 backdrop-blur-xl">
-        <div className="flex items-center gap-3">
-          <div className="grid h-[42px] w-[42px] place-items-center rounded-[13px] bg-gradient-to-br from-[#167fff] to-[#783fff] text-2xl shadow-[0_0_24px_#367aff45]">📚</div>
-          <div className="text-2xl font-extrabold tracking-tight">Study<span className="text-[#65a1ff]">Flow</span></div>
-        </div>
-
-        <div className="flex-1" />
-
-        <button
-          onClick={() => showToast(pendingCount ? `You have ${pendingCount} pending task${pendingCount === 1 ? '' : 's'}.` : "You're all caught up! ✨")}
-          className="grid h-[43px] w-[43px] place-items-center rounded-[13px] border border-[#20365e] bg-[#0d1730] text-lg text-white transition hover:scale-110"
-        >🔔</button>
-
-        <div className="flex items-center gap-2 rounded-3xl border border-[#20365e] bg-[#0d1730] py-[7px] pl-[7px] pr-[14px]">
-          <span className="grid h-[34px] w-[34px] place-items-center rounded-full bg-gradient-to-br from-[#a34cff] to-[#356fff]">👤</span>
-          <span className="text-sm font-semibold">{userName}</span>
-        </div>
-
-        <button onClick={handleLogout} className="rounded-xl bg-red-500/20 px-4 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-500/30">
-          🚪 Logout
-        </button>
-      </header>
-
-      {/* APP LAYOUT */}
-      <div className="grid min-h-[calc(100vh-78px)] grid-cols-1 lg:grid-cols-[258px_1fr]">
-
-        {/* SIDEBAR */}
-        <aside className="hidden flex-col border-r border-[#20365e] bg-gradient-to-b from-[#080f22] to-[#09132a] px-4 py-6 lg:flex">
-          <nav className="grid gap-2">
-            {[
-              { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-              { icon: '🔍', label: 'Search', path: '/search' },
-              { icon: '🗓️', label: 'Schedule', path: '/schedule' },
-              { icon: '✅', label: 'Tasks', path: '/tasks', active: true },
-              { icon: '⏱️', label: 'Pomodoro', path: '/pomodoro' },
-              { icon: '📊', label: 'Progress', path: '/progress' },
-              { icon: '📚', label: 'Subjects', path: '/subjects' },
-              { icon: '🎓', label: 'Chapters', path: '/chapters' },
-            ].map((item, i) => (
-              <button key={i} onClick={() => navigate(item.path)}
-                className={`flex min-h-[53px] items-center gap-[14px] rounded-[13px] border px-[17px] text-left text-sm font-medium transition ${
-                  item.active
-                    ? 'border-transparent bg-gradient-to-r from-[#277cff] to-[#4938e9] font-bold text-white shadow-[0_7px_23px_#245eff35]'
-                    : 'border-transparent text-[#a9bbdb] hover:border-[#243d67] hover:bg-[#132344] hover:text-white'
-                }`}>
-                <span className="w-6 text-center text-xl">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="mt-auto rounded-[18px] border border-[#24457a] bg-gradient-to-br from-[#10234a] to-[#171b43] p-[18px]">
-            <div className="mb-2 text-3xl">🌱 ✨</div>
-            <strong className="text-[15px] font-bold leading-relaxed">Small steps.<br />Big achievements.</strong>
-            <p className="mt-1.5 text-[11px] leading-relaxed text-[#92a6c8]">Every task you finish brings your goals closer.</p>
-          </div>
-        </aside>
-
-        {/* MAIN */}
-        <main className="min-w-0 p-8">
+      <main className="min-w-0 p-4 sm:p-6 lg:p-8">
           <section className="mb-6 flex items-center gap-4">
             <div className="grid h-[55px] w-[55px] place-items-center rounded-[17px] border border-[#3858a1] bg-gradient-to-br from-[#163d78] to-[#25205b] text-[27px]">☑️</div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">My <span className="text-[#75a8ff]">Tasks</span></h1>
+              <h1 className="text-3xl font-extrabold tracking-tight">My <span className="bg-gradient-to-r from-cyan-300 to-purple-400 bg-clip-text text-transparent">Tasks</span></h1>
               <p className="mt-1 text-[13px] text-[#92a6c8]">✨ Click a task to open Practice Test + AI Questions</p>
             </div>
           </section>
 
           {/* Stats */}
           <section className="mb-6 grid grid-cols-1 gap-[18px] sm:grid-cols-3">
-            <article className="relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#285aa1] bg-gradient-to-br from-[#102a54] to-[#0d1b37] p-5 text-[#64a2ff]">
+            <article className="interactive-card relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#285aa1] bg-gradient-to-br from-[#102a54]/90 to-[#0d1b37]/90 p-5 text-[#64a2ff] backdrop-blur-xl">
               <span className="block text-3xl font-extrabold">{total}</span>
               <div className="text-xs text-[#d0def5]">Total Tasks</div>
               <div className="mt-1 text-[10px] text-[#92a6c8]">Your learning checklist</div>
             </article>
-            <article className="relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#64502d] bg-gradient-to-br from-[#292443] to-[#19192e] p-5 text-[#ffc857]">
+            <article className="interactive-card relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#64502d] bg-gradient-to-br from-[#292443]/90 to-[#19192e]/90 p-5 text-[#ffc857] backdrop-blur-xl">
               <span className="block text-3xl font-extrabold">{pendingCount}</span>
               <div className="text-xs text-[#d0def5]">Pending</div>
               <div className="mt-1 text-[10px] text-[#92a6c8]">Ready for your focus</div>
             </article>
-            <article className="relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#17604f] bg-gradient-to-br from-[#0d3438] to-[#0c222f] p-5 text-[#39e6ae]">
+            <article className="interactive-card relative min-h-[106px] overflow-hidden rounded-[17px] border border-[#17604f] bg-gradient-to-br from-[#0d3438]/90 to-[#0c222f]/90 p-5 text-[#39e6ae] backdrop-blur-xl">
               <span className="block text-3xl font-extrabold">{completedCount}</span>
               <div className="text-xs text-[#d0def5]">Completed</div>
               <div className="mt-1 text-[10px] text-[#92a6c8]">Progress you have made</div>
@@ -238,7 +169,7 @@ function Tasks() {
           </section>
 
           {/* Add Task Panel */}
-          <section className="mb-6 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830] to-[#0b1428] p-6">
+          <section className="interactive-card mb-6 rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830]/90 to-[#0b1428]/90 p-6 backdrop-blur-xl">
             <div className="mb-5 flex items-center gap-3">
               <span className="text-2xl">✚</span>
               <div>
@@ -268,7 +199,7 @@ function Tasks() {
                 </select>
               </div>
               <button type="submit" disabled={loading}
-                className="min-h-[49px] rounded-xl border border-[#629bff] bg-gradient-to-r from-[#287fff] to-[#4938e9] px-4 text-sm font-bold text-white shadow-[0_6px_18px_#2867ff30] transition hover:-translate-y-0.5 disabled:opacity-50">
+                className="shine-button relative min-h-[49px] rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-4 text-sm font-bold text-white shadow-lg shadow-purple-500/30 transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-purple-500/50 disabled:opacity-50">
                 {loading ? '⏳ Adding...' : '+ Add Task'}
               </button>
             </form>
@@ -283,7 +214,7 @@ function Tasks() {
                 { key: 'completed', label: 'Completed', count: completedCount },
               ].map(tab => (
                 <button key={tab.key} onClick={() => setFilter(tab.key)}
-                  className={`min-h-[40px] rounded-3xl border px-4 text-xs font-semibold transition ${
+                  className={`shine-button relative min-h-[40px] rounded-3xl border px-4 text-xs font-semibold transition ${
                     filter === tab.key
                       ? 'border-[#4b84ff] bg-gradient-to-r from-[#287fff] to-[#4938e9] text-white'
                       : 'border-[#2a3e60] bg-[#0c1730] text-[#b5c7e5] hover:border-[#5788ed] hover:text-white'
@@ -306,7 +237,7 @@ function Tasks() {
           </section>
 
           {/* Task List */}
-          <section className="rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830] to-[#0b1428] p-5">
+          <section className="interactive-card rounded-[19px] border border-[#243b62] bg-gradient-to-br from-[#0d1830]/90 to-[#0b1428]/90 p-5 backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between px-1">
               <h2 className="text-base font-bold">
                 {filter === 'all' ? '📋 All Tasks' : filter === 'pending' ? '🕒 Pending Tasks' : '✅ Completed Tasks'}
@@ -337,12 +268,12 @@ function Tasks() {
                   <article
                     key={task.id}
                     onClick={() => handleTaskClick(task.id)}
-                    className="group flex cursor-pointer items-center gap-3 rounded-[14px] border border-[#233c63] bg-gradient-to-r from-[#101f3b] to-[#0c1830] p-4 transition hover:-translate-y-0.5 hover:border-[#4b84ff] hover:shadow-[0_8px_25px_#287fff35]"
+                    className="interactive-card group flex cursor-pointer items-center gap-3 rounded-[14px] border border-[#233c63] bg-gradient-to-r from-[#101f3b]/90 to-[#0c1830]/90 p-4 backdrop-blur-xl"
                   >
                     {/* Checkbox — stops navigation */}
                     <button
                       onClick={(e) => handleToggle(e, task)}
-                      className={`grid h-[25px] w-[25px] shrink-0 place-items-center rounded-lg border text-sm transition ${
+                      className={`shine-button relative grid h-[25px] w-[25px] shrink-0 place-items-center rounded-lg border text-sm transition ${
                         task.completed
                           ? 'border-[#31e6bb] bg-gradient-to-br from-[#0fcba1] to-[#0d9a83] text-[#06271e]'
                           : 'border-[#46658f] bg-[#09152a] text-white hover:border-[#39e6ae]'
@@ -386,13 +317,13 @@ function Tasks() {
 
                       <button
                         onClick={(e) => { e.stopPropagation(); setShowDetails(task) }}
-                        className="grid h-[35px] w-[35px] place-items-center rounded-[10px] border border-[#2a4066] bg-[#0b1730] text-[15px] text-[#a9c6ee] transition hover:border-[#629bff] hover:text-white"
+                        className="shine-button relative grid h-[35px] w-[35px] place-items-center rounded-[10px] border border-[#2a4066] bg-[#0b1730] text-[15px] text-[#a9c6ee] transition hover:border-[#629bff] hover:text-white"
                         title="Task details"
                       >ⓘ</button>
 
                       <button
                         onClick={(e) => handleDelete(e, task)}
-                        className="grid h-[35px] w-[35px] place-items-center rounded-[10px] border border-[#2a4066] bg-[#0b1730] text-[15px] text-[#a9c6ee] transition hover:border-[#a33e65] hover:bg-[#3b1930] hover:text-[#ff9db5]"
+                        className="shine-button relative grid h-[35px] w-[35px] place-items-center rounded-[10px] border border-[#2a4066] bg-[#0b1730] text-[15px] text-[#a9c6ee] transition hover:border-[#a33e65] hover:bg-[#3b1930] hover:text-[#ff9db5]"
                         title="Delete task"
                       >⌫</button>
                     </div>
@@ -405,8 +336,7 @@ function Tasks() {
           <div className="mt-4 py-4 text-center text-[10px] text-[#647da3]">
             STUDYFLOW · Stay focused, learn consistently, and celebrate every win ✨
           </div>
-        </main>
-      </div>
+      </main>
 
       {/* TOAST */}
       {toast && (
@@ -419,7 +349,7 @@ function Tasks() {
       {showDetails && (
         <div onClick={(e) => e.target === e.currentTarget && setShowDetails(null)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-2xl border border-[#2a4066] bg-[#0d1730] p-6">
+          <div className="interactive-card w-full max-w-md rounded-2xl border border-[#2a4066] bg-[#0d1730]/95 p-6 backdrop-blur-xl">
             <h3 className="mb-4 text-xl font-bold text-white">📋 Task Details</h3>
             <div className="space-y-3 text-sm">
               <div>
@@ -447,13 +377,13 @@ function Tasks() {
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 onClick={() => { setShowDetails(null); handleTaskClick(showDetails.id) }}
-                className="rounded-xl bg-gradient-to-r from-[#287fff] to-[#4938e9] py-3 text-sm font-bold text-white"
+                className="shine-button relative rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 py-3 text-sm font-bold text-white shadow-lg shadow-purple-500/30 transition hover:scale-[1.02] hover:shadow-purple-500/50"
               >
                 🎯 Open Task
               </button>
               <button
                 onClick={() => setShowDetails(null)}
-                className="rounded-xl border border-[#2a4066] bg-[#0b1730] py-3 text-sm font-bold text-[#a9c6ee]"
+                className="shine-button relative rounded-xl border border-[#2a4066] bg-[#0b1730] py-3 text-sm font-bold text-[#a9c6ee]"
               >
                 Close
               </button>

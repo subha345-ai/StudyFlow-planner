@@ -12,7 +12,6 @@ function Chapters() {
   const [mounted, setMounted] = useState(false)
   const navigate = useNavigate()
   const userId = localStorage.getItem('user_id')
-  const userName = localStorage.getItem('user_name') || 'Student'
 
   useEffect(() => {
     setMounted(true)
@@ -50,92 +49,17 @@ function Chapters() {
     navigate(`/chapter/${chapter.id}`)
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_id')
-    localStorage.removeItem('user_name')
-    navigate('/')
-  }
-
   const levels = ['Class 9', 'Class 10', 'Class 11', 'Class 12', 'BCA', 'BSc CSE', 'BBA']
 
   return (
-    <div className="min-h-screen bg-[#070d1f] text-[#f0f5ff] font-inter relative overflow-hidden">
+    <div className="dashboard-shell water-flow-enabled relative isolate min-h-screen bg-transparent font-inter text-[#f0f5ff]">
       {/* Background Gradients */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 right-0 h-96 w-96 rounded-full bg-[#263c75]/20 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-[#502080]/15 blur-3xl" />
+        <div className="aurora-orb aurora-one" />
+        <div className="aurora-orb aurora-two" />
       </div>
 
-      {/* ===== TOP BAR ===== */}
-      <header className="relative z-10 flex h-[78px] items-center justify-between border-b border-[#16284a] bg-[#070d1f]/95 px-8 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <div className="grid h-[42px] w-[42px] place-items-center rounded-[13px] bg-gradient-to-br from-[#167fff] to-[#783fff] text-2xl shadow-[0_0_30px_#367aff80,0_0_60px_#367aff40]">
-            📚
-          </div>
-          <h1 className="text-[25px] font-extrabold tracking-tight text-white">
-            Study<span className="text-[#65a1ff]">Flow</span>
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0c1730] py-[6px] pl-[6px] pr-[14px] transition hover:border-[#347cff] hover:shadow-[0_0_20px_#347cff40]">
-            <div className="grid h-[32px] w-[32px] place-items-center rounded-full bg-[#132a54] text-sm text-[#65a1ff] shadow-[0_0_15px_#347cff40]">
-              👤
-            </div>
-            <span className="text-sm font-medium text-white">{userName}</span>
-            <span className="text-[10px] text-[#8fa5c9]">▼</span>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 rounded-[10px] bg-gradient-to-r from-[#e63946] to-[#b91c1c] px-4 py-2 text-sm font-bold text-white shadow-[0_0_20px_#e6394660] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_#e63946]"
-          >
-            🚪 Logout
-          </button>
-        </div>
-      </header>
-
-      <div className="relative z-10 flex min-h-[calc(100vh-78px)]">
-        {/* ===== SIDEBAR ===== */}
-        <aside className="hidden w-[258px] flex-col border-r border-[#16284a] bg-[#070d1f] p-6 lg:flex">
-          <nav className="grid gap-2">
-            {[
-              { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-              { icon: '🔍', label: 'Search', path: '/search' },
-              { icon: '🗓️', label: 'Schedule', path: '/schedule' },
-              { icon: '✅', label: 'Tasks', path: '/tasks' },
-              { icon: '⏱️', label: 'Pomodoro', path: '/pomodoro' },
-              { icon: '📊', label: 'Progress', path: '/progress' },
-              { icon: '👥', label: 'Subjects', path: '/subjects' },
-              { icon: '📖', label: 'Chapters', path: '/chapters', active: true },
-            ].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(item.path)}
-                className={`flex min-h-[50px] items-center gap-4 rounded-[12px] border px-[17px] text-sm font-medium transition ${
-                  item.active
-                    ? 'border-[#1a3a6e] bg-[#0f2040] font-bold text-[#65a1ff] shadow-[inset_0_0_20px_#347cff20,0_0_15px_#347cff30]'
-                    : 'border-transparent text-[#8fa5c9] hover:bg-[#0c1730] hover:text-white'
-                }`}
-              >
-                <span className="w-[25px] text-center text-lg">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          {/* Sidebar Bottom Tip */}
-          <div className="mt-auto rounded-[16px] border border-[#1e355e] bg-[#0b1428] p-[20px] shadow-[0_0_25px_#277cff10]">
-            <div className="mb-2 text-[20px] text-[#65a1ff]">✨✨</div>
-            <p className="text-[13px] font-medium leading-relaxed text-[#c5d6f3]">
-              Tip: Use filters to explore chapters efficiently.
-            </p>
-            <div className="mt-3 h-[2px] w-12 rounded-full bg-gradient-to-r from-[#347cff] to-transparent"></div>
-          </div>
-        </aside>
-
-        {/* ===== MAIN CONTENT ===== */}
-        <main className="min-w-0 flex-1 p-8">
+      <main className="relative z-10 min-w-0 p-4 sm:p-6 lg:p-8">
           <div className={`transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
             
             {/* Page Heading */}
@@ -154,7 +78,7 @@ function Chapters() {
             </div>
 
             {/* ===== Filters ===== */}
-            <div className="mb-6 grid grid-cols-1 gap-5 rounded-[16px] border border-[#1e355e] bg-[#0c1730] p-6 shadow-[0_0_30px_#347cff10] md:grid-cols-3">
+            <div className="interactive-card mb-6 grid grid-cols-1 gap-5 rounded-[16px] border border-[#1e355e] bg-[#0c1730]/85 p-6 shadow-[0_0_30px_#347cff10] backdrop-blur-xl md:grid-cols-3">
               {/* Subject */}
               <div>
                 <label className="mb-2 block text-[12px] font-medium text-[#8fa5c9]">Subject</label>
@@ -229,13 +153,13 @@ function Chapters() {
 
             {/* ===== Chapters List ===== */}
             {loading ? (
-              <div className="rounded-[16px] border border-[#1e355e] bg-[#0c1730] py-16 text-center shadow-[0_0_30px_#347cff10]">
+              <div className="interactive-card rounded-[16px] border border-[#1e355e] bg-[#0c1730]/85 py-16 text-center shadow-[0_0_30px_#347cff10] backdrop-blur-xl">
                 <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#347cff] border-t-transparent shadow-[0_0_20px_#347cff60]" />
                 <p className="mt-3 text-sm text-[#8fa5c9]">Loading chapters...</p>
               </div>
             ) : chapters.length === 0 ? (
               /* ===== Empty State (Image Design) ===== */
-              <div className="rounded-[16px] border border-[#1e355e] bg-[#0c1730] p-10 shadow-[0_0_30px_#347cff10]">
+              <div className="interactive-card rounded-[16px] border border-[#1e355e] bg-[#0c1730]/85 p-10 shadow-[0_0_30px_#347cff10] backdrop-blur-xl">
                 <div className="flex flex-col items-center justify-center text-center">
                   
                   {/* Mailbox Illustration */}
@@ -262,13 +186,13 @@ function Chapters() {
                         setSelectedLevel('Class 12')
                         setSelectedDifficulty('')
                       }}
-                      className="flex items-center gap-2 rounded-[10px] bg-gradient-to-r from-[#1e6bff] to-[#00d2ff] px-6 py-3 text-sm font-bold text-white shadow-[0_0_25px_#00d2ff60,0_0_50px_#00d2ff30] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_35px_#00d2ff,0_0_70px_#00d2ff50]"
+                      className="shine-button relative flex items-center gap-2 rounded-[10px] bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_25px_#00d2ff60,0_0_50px_#00d2ff30] transition hover:-translate-y-0.5 hover:scale-105 hover:brightness-110 hover:shadow-[0_0_35px_#00d2ff,0_0_70px_#00d2ff50]"
                     >
                       🔄 Try a Different Subject
                     </button>
                     <button
                       onClick={() => navigate('/subjects')}
-                      className="flex items-center gap-2 rounded-[10px] border border-[#1e355e] bg-[#0a142a] px-6 py-3 text-sm font-bold text-white transition hover:border-[#347cff] hover:shadow-[0_0_20px_#347cff60]"
+                      className="shine-button relative flex items-center gap-2 rounded-[10px] border border-[#1e355e] bg-[#0a142a] px-6 py-3 text-sm font-bold text-white transition hover:scale-105 hover:border-[#347cff] hover:shadow-[0_0_20px_#347cff60]"
                     >
                       ⭐ View All Subjects
                     </button>
@@ -278,19 +202,19 @@ function Chapters() {
                   <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                     <button
                       onClick={() => setSelectedSubject('Physics')}
-                      className="flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
+                      className="shine-button relative flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
                     >
                       <span className="text-[#65a1ff]">↻</span> Popular: Physics
                     </button>
                     <button
                       onClick={() => setSelectedLevel('Class 11')}
-                      className="flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
+                      className="shine-button relative flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
                     >
                       <span className="text-[#65a1ff]">↻</span> Try: Class 11
                     </button>
                     <button
                       onClick={() => setSelectedDifficulty('')}
-                      className="flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
+                      className="shine-button relative flex items-center gap-2 rounded-full border border-[#1e355e] bg-[#0a142a] px-4 py-2 text-[12px] font-medium text-[#c5d6f3] transition hover:border-[#347cff] hover:text-white"
                     >
                       <span className="text-[#65a1ff]">↻</span> Broaden: Set Difficulty to All
                     </button>
@@ -303,7 +227,7 @@ function Chapters() {
                 {chapters.map((chapter) => (
                   <div
                     key={chapter.id}
-                    className="group relative overflow-hidden rounded-[16px] border border-[#1e355e] bg-[#0c1730] p-5 shadow-[0_0_30px_#347cff10] transition hover:-translate-y-1 hover:border-[#347cff] hover:shadow-[0_0_40px_#347cff30]"
+                    className="interactive-card group relative overflow-hidden rounded-[16px] border border-[#1e355e] bg-[#0c1730]/85 p-5 shadow-[0_0_30px_#347cff10] backdrop-blur-xl"
                   >
                     {/* Glow */}
                     <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br from-[#347cff]/20 to-[#9655ff]/20 blur-2xl transition-all duration-500 group-hover:scale-150" />
@@ -355,7 +279,7 @@ function Chapters() {
                       {/* Start button */}
                       <button
                         onClick={() => handleStart(chapter)}
-                        className="mt-4 w-full rounded-[10px] bg-gradient-to-r from-[#1e6bff] to-[#00d2ff] py-2.5 text-sm font-bold text-white shadow-[0_0_20px_#00d2ff40] transition hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_30px_#00d2ff,0_0_60px_#00d2ff60]"
+                        className="shine-button relative mt-4 w-full rounded-[10px] bg-gradient-to-r from-cyan-500 to-purple-600 py-2.5 text-sm font-bold text-white shadow-[0_0_20px_#00d2ff40] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_30px_#00d2ff,0_0_60px_#00d2ff60]"
                       >
                         Start →
                       </button>
@@ -366,7 +290,6 @@ function Chapters() {
             )}
           </div>
         </main>
-      </div>
     </div>
   )
 }

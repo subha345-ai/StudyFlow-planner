@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import API from '../services/api'
 
 // ═══ Pomodoro Helpers ═══
@@ -22,22 +22,17 @@ const savePomodoro = (state) => {
 }
 
 function Dashboard() {
-  const [userName, setUserName] = useState('Student')
+  const { lightMode, searchQuery, userName, setUserName } = useOutletContext()
   const [tasks, setTasks] = useState([])
   const [progress, setProgress] = useState(0)
-  const [lightMode, setLightMode] = useState(false)
   const [timer, setTimer] = useState(25 * 60)
   const [isRunning, setIsRunning] = useState(false)
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [showTaskModal, setShowTaskModal] = useState(false)
-  const [showProfileModal, setShowProfileModal] = useState(false)
-  const [showNotifModal, setShowNotifModal] = useState(false)
   const [showTimerSettings, setShowTimerSettings] = useState(false)
   const [newTaskName, setNewTaskName] = useState('')
   const [newTaskSubject, setNewTaskSubject] = useState('Programming')
-  const [editName, setEditName] = useState('')
   const [timerMinutes, setTimerMinutes] = useState(25)
-  const [searchQuery, setSearchQuery] = useState('')
   const [toast, setToast] = useState('')
 
   const navigate = useNavigate()
@@ -67,7 +62,6 @@ function Dashboard() {
 
     if (name) {
       setUserName(name)
-      setEditName(name)
     }
 
     API.get(`/api/tasks?user_id=${userId}`)
@@ -219,21 +213,6 @@ function Dashboard() {
     }
   }
 
-  const handleSaveProfile = () => {
-    if (!editName.trim()) return
-    setUserName(editName.trim())
-    localStorage.setItem('user_name', editName.trim())
-    setShowProfileModal(false)
-    showToast('Profile updated.')
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('user_id')
-    localStorage.removeItem('user_name')
-    // Keep pomodoro running after logout
-    navigate('/')
-  }
-
   const completedCount = tasks.filter(t => t.completed).length
   const studyHours = (3.5 + totalSeconds / 3600).toFixed(1)
 
@@ -248,29 +227,14 @@ function Dashboard() {
   const subjectColors = ['bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-pink-500', 'bg-orange-500']
 
   return (
-    <div className={`relative min-h-screen w-full font-inter ${lightMode ? 'bg-[#e9efff]' : 'bg-[#03091f]'}`}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        .font-inter { font-family: 'Inter', sans-serif; }
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes pulse-ring {
-          0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-          70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-        }
-        .anim-float { animation: float 5s ease-in-out infinite; }
-        .timer-running {
-          animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-      `}</style>
-
+    <div className={`dashboard-shell relative isolate min-h-screen w-full overflow-x-hidden font-inter ${lightMode ? 'bg-[#e9efff]' : 'water-flow-enabled bg-[#03091f]'}`}>
       {!lightMode && (
         <>
-          <div className="pointer-events-none absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-purple-700/40 blur-[130px]" />
-          <div className="pointer-events-none absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-blue-800/40 blur-[130px]" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="aurora-orb aurora-one" />
+            <div className="aurora-orb aurora-two" />
+            <div className="aurora-orb aurora-three" />
+          </div>
         </>
       )}
 
@@ -293,107 +257,9 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1500px] p-4">
-        <div className={`flex min-h-[calc(100vh-2rem)] overflow-hidden rounded-3xl border border-purple-500/20 shadow-2xl ${lightMode ? 'bg-white' : 'bg-[#030a20]/95'}`}>
-          <div className="flex w-full flex-col lg:flex-row">
-
-            {/* SIDEBAR */}
-            <aside className={`relative hidden w-60 shrink-0 flex-col overflow-hidden border-r border-purple-500/20 p-6 lg:flex ${lightMode ? 'bg-gradient-to-b from-[#e4eaff] to-[#f5f0ff]' : 'bg-gradient-to-b from-[#07132f] via-[#020a22] to-[#251078]'}`}>
-              <div className="relative z-10 mb-8 flex items-center gap-3 px-2">
-                <div className="text-3xl drop-shadow-[0_0_10px_rgba(37,123,255,0.8)]">🎓</div>
-                <div>
-                  <h2 className={`text-xl font-bold tracking-tight ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>
-                    Study<span className="text-purple-400">flow</span>
-                  </h2>
-                  <p className={`text-[10px] ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>Learn · Plan · Grow</p>
-                </div>
-              </div>
-
-              <nav className="relative z-10 flex-1 space-y-2">
-                {[
-                  { icon: '⌂', label: 'Dashboard', path: '/dashboard', active: true },
-                  { icon: '▦', label: 'Schedule', path: '/schedule' },
-                  { icon: '◴', label: 'Pomodoro', path: '/pomodoro' },
-                  { icon: '☑', label: 'Tasks', path: '/tasks' },
-                  { icon: '♧', label: 'Subjects', path: '/subjects' },
-                  { icon: '🎓', label: 'Chapters', path: '/chapters' },
-                ].map((item, i) => (
-                  <button
-                    key={i}
-                    onClick={() => navigate(item.path)}
-                    className={`flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-200 ${
-                      item.active
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-purple-600/30 ring-1 ring-purple-400/40'
-                        : lightMode
-                          ? 'text-[#263a6b] hover:bg-purple-500/20'
-                          : 'text-[#d5e0ff] hover:bg-purple-500/20'
-                    }`}
-                  >
-                    <span className="w-6 text-center text-lg">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </button>
-                ))}
-              </nav>
-
-              <div className="relative z-10 mt-6 px-4">
-                <div className="mb-3 text-2xl text-cyan-300">🌱</div>
-                <p className={`text-xs leading-relaxed ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>
-                  Small steps
-                  <br />
-                  make big progress.
-                </p>
-                <p className="mt-3 text-xs tracking-widest text-purple-400">〰〰〰</p>
-              </div>
-            </aside>
-
-            {/* MAIN */}
-            <main className="flex min-w-0 flex-1 flex-col">
-              <header className={`flex h-20 shrink-0 items-center gap-4 border-b border-purple-500/20 px-4 sm:px-6 ${lightMode ? 'bg-[#f8faff]' : 'bg-[#050d2b]/80 backdrop-blur-xl'}`}>
-                <div className="relative mr-auto w-full max-w-md">
-                  <span className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>⌕</span>
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search tasks..."
-                    className={`h-11 w-full rounded-2xl border border-purple-500/30 pl-11 pr-4 text-sm outline-none transition focus:border-purple-400 ${lightMode ? 'bg-[#e4eaff] text-[#17264b]' : 'bg-[#101d43] text-white placeholder:text-[#b7c7ef]'}`}
-                  />
-                </div>
-
-                <button
-                  onClick={() => setShowNotifModal(true)}
-                  className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-purple-500/30 text-lg transition hover:border-purple-400 hover:scale-110 ${lightMode ? 'bg-white' : 'bg-[#101b41]'}`}
-                >
-                  🔔
-                  <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-pink-400 shadow-md shadow-pink-400/60" />
-                </button>
-
-                <button
-                  onClick={() => { setLightMode(!lightMode); showToast(!lightMode ? 'Light theme enabled' : 'Dark theme enabled') }}
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-purple-500/30 text-lg transition hover:border-purple-400 hover:scale-110 ${lightMode ? 'bg-white' : 'bg-[#101b41]'}`}
-                >
-                  {lightMode ? '☀️' : '🌙'}
-                </button>
-
-                <button
-                  onClick={() => { setEditName(userName); setShowProfileModal(true) }}
-                  className={`flex h-11 items-center gap-2 rounded-full border-2 border-blue-400/60 px-3 text-sm font-semibold shadow-lg shadow-blue-500/30 transition hover:scale-105 ${lightMode ? 'bg-white text-[#17264b]' : 'bg-[#101b41] text-white'}`}
-                >
-                  <span className="text-lg">👤</span>
-                  <span className="hidden sm:inline">{userName}</span>
-                </button>
-
-                <button
-                  onClick={handleLogout}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-lg transition hover:scale-110 hover:bg-red-500/20"
-                >
-                  🚪
-                </button>
-              </header>
-
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+      <div className="dashboard-content relative z-10 p-3 sm:p-6 lg:p-8">
                 {/* Welcome */}
-                <section className="mb-6 flex flex-wrap items-start justify-between gap-4">
+                <section className="dashboard-reveal mb-6 flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <h1 className={`text-2xl font-extrabold tracking-tight sm:text-3xl ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>
                       {getGreeting()},{' '}
@@ -412,10 +278,10 @@ function Dashboard() {
                 </section>
 
                 {/* Stats */}
-                <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <section className="dashboard-reveal dashboard-stagger mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <article
                     onClick={() => navigate('/tasks')}
-                    className="relative cursor-pointer overflow-hidden rounded-2xl border border-purple-500/50 bg-gradient-to-br from-purple-800 via-blue-800 to-blue-900 p-4 shadow-lg transition hover:scale-[1.02]"
+                    className="interactive-card group relative cursor-pointer overflow-hidden rounded-2xl border border-purple-400/30 bg-gradient-to-br from-purple-800/80 via-blue-800/75 to-[#071b3e]/90 p-4 shadow-lg shadow-purple-950/30 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-cyan-300/60 hover:shadow-[0_18px_45px_rgba(6,182,212,0.16)]"
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-blue-300 bg-blue-500/30 text-2xl shadow-lg shadow-blue-500/50">
@@ -431,7 +297,7 @@ function Dashboard() {
 
                   <article
                     onClick={() => navigate('/tasks')}
-                    className="relative cursor-pointer overflow-hidden rounded-2xl border border-emerald-500/50 bg-gradient-to-br from-emerald-900 to-emerald-700 p-4 shadow-lg transition hover:scale-[1.02]"
+                    className="interactive-card group relative cursor-pointer overflow-hidden rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-900/85 to-emerald-700/75 p-4 shadow-lg shadow-emerald-950/30 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-emerald-300/70 hover:shadow-[0_18px_45px_rgba(16,185,129,0.2)]"
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-emerald-300 bg-emerald-500/30 text-2xl shadow-lg shadow-emerald-500/50">
@@ -445,7 +311,7 @@ function Dashboard() {
                     </div>
                   </article>
 
-                  <article className="relative overflow-hidden rounded-2xl border border-pink-500/50 bg-gradient-to-br from-pink-900 to-pink-700 p-4 shadow-lg">
+                  <article className="interactive-card group relative overflow-hidden rounded-2xl border border-pink-400/30 bg-gradient-to-br from-purple-900/85 to-pink-800/70 p-4 shadow-lg shadow-pink-950/30 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-pink-300/60 hover:shadow-[0_18px_45px_rgba(236,72,153,0.18)]">
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-pink-300 bg-pink-500/30 text-2xl shadow-lg shadow-pink-500/50">
                         🔥
@@ -460,7 +326,7 @@ function Dashboard() {
                 </section>
 
                 {/* 3-column */}
-                <section className={`mb-6 grid grid-cols-1 overflow-hidden rounded-2xl border lg:grid-cols-3 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]' : 'border-purple-500/30 bg-[#091535]'}`}>
+                <section className={`dashboard-reveal interactive-card mb-6 grid grid-cols-1 overflow-hidden rounded-2xl border shadow-xl backdrop-blur-2xl lg:grid-cols-3 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]/85 shadow-purple-200/40' : 'border-white/10 bg-[#091535]/65 shadow-black/20'}`}>
                   {/* Latest Tasks */}
                   <div className={`border-b p-5 lg:border-b-0 lg:border-r ${lightMode ? 'border-purple-300/50' : 'border-purple-500/20'}`}>
                     <div className="mb-4 flex items-center justify-between">
@@ -486,7 +352,7 @@ function Dashboard() {
                           </p>
                           <button
                             onClick={() => navigate('/tasks')}
-                            className="mt-3 rounded-lg bg-blue-500 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-600"
+                            className="shine-button relative mt-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-1.5 text-xs font-semibold text-white shadow-lg shadow-cyan-950/30 transition hover:shadow-cyan-500/30"
                           >
                             + Add Task
                           </button>
@@ -496,8 +362,8 @@ function Dashboard() {
                           <div
                             key={task.id || i}
                             onClick={() => navigate(`/task/${task.id}`)}
-                            className={`group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition hover:scale-[1.02] ${
-                              lightMode ? 'bg-[#dce6ff] hover:bg-[#cdd9ff]' : 'bg-[#12224e] hover:bg-[#1a2d5c]'
+                            className={`group flex cursor-pointer items-center gap-3 rounded-xl border border-transparent p-3 transition-all duration-300 hover:scale-[1.02] ${
+                              lightMode ? 'bg-[#dce6ff] hover:border-purple-300 hover:bg-[#cdd9ff]' : 'bg-[#12224e]/75 hover:border-cyan-400/30 hover:bg-[#162b59] hover:shadow-[0_8px_24px_rgba(6,182,212,0.1)]'
                             }`}
                           >
                             <span className={`h-8 w-2 rounded-full ${
@@ -595,8 +461,8 @@ function Dashboard() {
                 </section>
 
                 {/* Bottom — Progress + Pomodoro */}
-                <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                  <div className={`rounded-2xl border p-6 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]' : 'border-purple-500/40 bg-[#071a42]'}`}>
+                <section className="dashboard-reveal dashboard-stagger mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <div className={`interactive-card rounded-2xl border p-5 shadow-xl backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(168,85,247,0.12)] sm:p-6 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]/85' : 'border-white/10 bg-[#071a42]/65'}`}>
                     <div className="mb-4 flex items-center gap-3">
                       <span className="text-2xl text-blue-400">◎</span>
                       <h3 className={`text-base font-semibold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>Progress</h3>
@@ -615,7 +481,7 @@ function Dashboard() {
                     </p>
                   </div>
 
-                  <div className={`rounded-2xl border p-6 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]' : 'border-purple-500/40 bg-[#080f30]'}`}>
+                  <div className={`interactive-card rounded-2xl border p-5 shadow-xl backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/30 hover:shadow-[0_18px_45px_rgba(6,182,212,0.12)] sm:p-6 ${lightMode ? 'border-purple-300/50 bg-[#edf2ff]/85' : 'border-white/10 bg-[#080f30]/70'}`}>
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-2xl text-pink-400">◴</span>
@@ -626,15 +492,15 @@ function Dashboard() {
                       </div>
                       <button
                         onClick={() => { setTimerMinutes(Math.round(timer / 60)); setShowTimerSettings(true) }}
-                        className={`text-xl transition hover:scale-110 ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}
+                        className={`shine-button relative rounded-lg px-2 text-xl transition hover:scale-110 ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4] hover:text-cyan-300'}`}
                       >
                         •••
                       </button>
                     </div>
 
-                    <div className={`mx-auto my-3 flex h-28 w-28 items-center justify-center rounded-full border-4 bg-[#080f2d] text-2xl font-bold text-white shadow-lg ${
+                    <div className={`mx-auto my-3 flex h-28 w-28 items-center justify-center rounded-full border-4 bg-[#080f2d]/90 text-2xl font-bold text-white shadow-lg ${
                       isRunning
-                        ? 'border-blue-500 shadow-blue-500/70 timer-running'
+                        ? 'border-cyan-400 shadow-cyan-500/70 timer-running'
                         : 'border-blue-500 shadow-blue-500/50'
                     }`}>
                       {formatTimer(timer)}
@@ -643,17 +509,17 @@ function Dashboard() {
                     <div className="flex justify-center gap-3">
                       <button
                         onClick={handleStartTimer}
-                        className={`rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:scale-105 ${
+                        className={`shine-button relative rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition duration-300 hover:scale-105 ${
                           isRunning
                             ? 'bg-gradient-to-r from-yellow-500 to-orange-500 shadow-orange-500/50'
-                            : 'bg-gradient-to-r from-blue-500 to-purple-600 shadow-purple-500/50'
+                            : 'bg-gradient-to-r from-cyan-500 to-purple-600 shadow-purple-500/50'
                         }`}
                       >
                         {isRunning ? '⏸ Pause' : '▶ Start'}
                       </button>
                       <button
                         onClick={handleResetTimer}
-                        className={`rounded-full border border-purple-500/40 px-6 py-2.5 text-sm font-semibold transition hover:bg-purple-500/10 ${lightMode ? 'text-[#17264b]' : 'text-white'}`}
+                        className={`shine-button relative rounded-full border border-purple-500/40 px-6 py-2.5 text-sm font-semibold transition hover:border-cyan-400/50 hover:bg-purple-500/10 ${lightMode ? 'text-[#17264b]' : 'text-white'}`}
                       >
                         ⟳ Reset
                       </button>
@@ -676,10 +542,6 @@ function Dashboard() {
                   <span className="text-xl text-purple-400">✦</span>
                 </footer>
               </div>
-            </main>
-          </div>
-        </div>
-      </div>
 
       {/* Toast */}
       {toast && (
@@ -688,58 +550,10 @@ function Dashboard() {
         </div>
       )}
 
-      {/* Profile Modal */}
-      {showProfileModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className={`w-full max-w-md rounded-2xl border border-purple-500/40 p-6 ${lightMode ? 'bg-white' : 'bg-[#0b1738]'}`}>
-            <h2 className={`mb-4 text-xl font-bold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>Edit profile</h2>
-            <label className={`mb-1 block text-xs ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>Display name</label>
-            <input
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              maxLength={35}
-              className={`mb-5 w-full rounded-xl border border-purple-500/30 px-4 py-3 text-sm outline-none ${lightMode ? 'bg-[#f0f4ff] text-[#17264b]' : 'bg-[#101e49] text-white'}`}
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowProfileModal(false)}
-                className={`flex-1 rounded-xl border border-purple-500/40 py-3 text-sm font-semibold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveProfile}
-                className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Notif Modal */}
-      {showNotifModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className={`w-full max-w-md rounded-2xl border border-purple-500/40 p-6 ${lightMode ? 'bg-white' : 'bg-[#0b1738]'}`}>
-            <h2 className={`mb-4 text-xl font-bold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>Notifications</h2>
-            <p className={`mb-5 text-sm ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>
-              You're all caught up! 🎯
-            </p>
-            <button
-              onClick={() => setShowNotifModal(false)}
-              className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg"
-            >
-              Got it
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Timer Modal */}
       {showTimerSettings && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className={`w-full max-w-md rounded-2xl border border-purple-500/40 p-6 ${lightMode ? 'bg-white' : 'bg-[#0b1738]'}`}>
+          <div className={`w-full max-w-md rounded-2xl border p-6 shadow-2xl backdrop-blur-2xl ${lightMode ? 'border-purple-300/50 bg-white/95' : 'border-white/10 bg-[#0b1738]/90 shadow-purple-950/50'}`}>
             <h2 className={`mb-4 text-xl font-bold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}>Pomodoro settings</h2>
             <label className={`mb-1 block text-xs ${lightMode ? 'text-[#52648c]' : 'text-[#b8c8f4]'}`}>Duration (minutes)</label>
             <input
@@ -753,13 +567,13 @@ function Dashboard() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowTimerSettings(false)}
-                className={`flex-1 rounded-xl border border-purple-500/40 py-3 text-sm font-semibold ${lightMode ? 'text-[#17264b]' : 'text-white'}`}
+                className={`shine-button relative flex-1 rounded-xl border border-purple-500/40 py-3 text-sm font-semibold transition hover:border-cyan-400/50 ${lightMode ? 'text-[#17264b]' : 'text-white'}`}
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveTimerSettings}
-                className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg"
+                className="shine-button relative flex-1 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-950/30 transition hover:shadow-purple-500/30"
               >
                 Save
               </button>

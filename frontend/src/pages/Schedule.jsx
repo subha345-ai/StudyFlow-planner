@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import API from '../services/api'
 
 function Schedule() {
@@ -9,7 +9,7 @@ function Schedule() {
   const [newTask, setNewTask] = useState({ title: '', subject: '' })
   const [toast, setToast] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [lightMode, setLightMode] = useState(false)
+  const { lightMode } = useOutletContext()
   const navigate = useNavigate()
   const userId = localStorage.getItem('user_id')
 
@@ -95,138 +95,28 @@ function Schedule() {
   const pending = filtered.filter(t => !t.done)
   const completed = filtered.filter(t => t.done)
 
-  // ═══ Theme colors ═══
-  const theme = lightMode ? {
-    bg: 'bg-gradient-to-br from-[#eef3ff] via-[#f7f5ff] to-[#f3f1ff]',
-    text: 'text-[#172c57]',
-    panelBg: 'bg-white/80',
-    panelBorder: 'border-white',
-    statBg: 'bg-white/80',
-    sidebarBg: 'bg-gradient-to-b from-[#102052] to-[#0c1a46]',
-  } : {
-    bg: 'bg-[#0a0428]',
-    text: 'text-white',
-    panelBg: 'bg-[#0d0524]/80',
-    panelBorder: 'border-purple-500/30',
-    statBg: 'bg-[#0d0524]/80',
-    sidebarBg: 'bg-gradient-to-b from-[#0f0c3c] to-[#0a0428]',
-  }
-
   return (
-    <div className={`min-h-screen w-full ${lightMode ? 'bg-gradient-to-br from-[#eef3ff] via-[#f7f5ff] to-[#f3f1ff]' : 'bg-[#0a0428]'} transition-colors duration-500`}>
+    <div className={`dashboard-shell relative isolate min-h-screen w-full ${lightMode ? 'bg-gradient-to-br from-[#eef3ff] via-[#f7f5ff] to-[#f3f1ff]' : 'water-flow-enabled bg-transparent'} transition-colors duration-500`}>
 
       {/* ═══ Background Glow ═══ */}
       {!lightMode && (
         <>
-          <div className="pointer-events-none absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-purple-700/40 blur-[130px]" />
-          <div className="pointer-events-none absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-blue-800/40 blur-[130px]" />
+          <div className="aurora-orb aurora-one" />
+          <div className="aurora-orb aurora-two" />
         </>
       )}
 
-      <div className="relative flex min-h-screen">
-
-        {/* ═══ SIDEBAR ═══ */}
-        <aside className={`hidden w-[260px] shrink-0 flex-col p-6 lg:flex ${lightMode ? 'bg-gradient-to-b from-[#102052] to-[#0c1a46]' : 'bg-gradient-to-b from-[#0f0c3c] to-[#0a0428]'} border-r ${lightMode ? 'border-white/10' : 'border-purple-500/20'}`}>
-          {/* Brand */}
-          <div className={`mb-7 flex items-center gap-3 border-b pb-5 ${lightMode ? 'border-white/10' : 'border-purple-500/20'}`}>
-            <div className="text-3xl">🎓</div>
-            <div>
-              <h1 className={`text-xl font-extrabold ${lightMode ? 'text-white' : 'text-white'}`}>
-                Study<span className="text-blue-300">Flow</span>
-              </h1>
-              <p className={`text-[10px] ${lightMode ? 'text-blue-200' : 'text-slate-400'}`}>
-                Learn · Plan · Grow
-              </p>
-            </div>
+      <main className="min-w-0 p-4 sm:p-6 lg:p-8">
+          <div className={`mb-5 flex h-12 items-center gap-3 rounded-2xl border px-4 ${lightMode ? 'border-white bg-white/60' : 'border-purple-500/30 bg-[#0d0524]/80'}`}>
+            <span className="text-lg text-blue-400">⌕</span>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search schedule..."
+              className={`flex-1 bg-transparent text-sm outline-none ${lightMode ? 'text-[#172c57]' : 'text-white placeholder:text-slate-500'}`}
+            />
           </div>
-
-          {/* Nav */}
-          <nav className="flex-1 space-y-2">
-            {[
-              { icon: '⌂', label: 'Dashboard', path: '/dashboard' },
-              { icon: '⌕', label: 'Search', path: '/search' },
-              { icon: '▦', label: 'Schedule', path: '/schedule', active: true },
-              { icon: '☑', label: 'Tasks', path: '/tasks' },
-              { icon: '⏱', label: 'Pomodoro', path: '/pomodoro' },
-              { icon: '▥', label: 'Progress', path: '/progress' },
-              { icon: '📚', label: 'Subjects', path: '/subjects' },
-              { icon: '🎓', label: 'Chapters', path: '/chapters' },
-            ].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(item.path)}
-                className={`flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition-all ${
-                  item.active
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-purple-600/40'
-                    : lightMode
-                    ? 'text-blue-100 hover:bg-white/10'
-                    : 'text-slate-300 hover:bg-purple-500/20'
-                }`}
-              >
-                <span className="w-6 text-center text-lg">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          {/* Note */}
-          <div className={`mt-6 rounded-2xl border p-4 ${lightMode ? 'border-white/20 bg-white/5' : 'border-purple-500/20 bg-purple-500/5'}`}>
-            <div className="mb-2 text-2xl">🌿</div>
-            <p className={`text-xs leading-relaxed ${lightMode ? 'text-blue-100' : 'text-slate-400'}`}>
-              Small steps
-              <br />
-              <strong className="text-white">make big progress.</strong>
-            </p>
-          </div>
-        </aside>
-
-        {/* ═══ MAIN ═══ */}
-        <main className="min-w-0 flex-1 p-6 lg:p-8">
-
-          {/* Topbar */}
-          <header className="mb-5 flex h-16 items-center justify-between gap-4">
-            <div className={`flex h-14 flex-1 items-center gap-3 rounded-2xl border px-4 ${lightMode ? 'border-white bg-white/60' : 'border-purple-500/30 bg-[#0d0524]/80'}`}>
-              <span className="text-lg text-blue-400">⌕</span>
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search anything..."
-                className={`flex-1 bg-transparent text-sm outline-none ${lightMode ? 'text-[#172c57]' : 'text-white placeholder:text-slate-500'}`}
-              />
-              <span className={`hidden rounded-lg px-2 py-1 text-xs font-bold sm:block ${lightMode ? 'bg-blue-100 text-blue-700' : 'bg-purple-500/20 text-purple-300'}`}>
-                Ctrl + K
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => showToast(tasks.some(t => !t.done) ? 'You have tasks waiting! 💪' : 'You are all caught up! 🎉')}
-                className={`relative flex h-14 w-14 items-center justify-center rounded-full border text-xl transition hover:scale-110 ${lightMode ? 'border-white bg-white/60' : 'border-purple-500/30 bg-[#0d0524]/80'}`}
-              >
-                🔔
-                <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-pink-400" />
-              </button>
-
-              <button
-                onClick={() => { setLightMode(!lightMode); showToast(!lightMode ? 'Light mode ☀️' : 'Dark mode 🌙') }}
-                className={`flex h-14 w-14 items-center justify-center rounded-full border text-xl transition hover:scale-110 ${lightMode ? 'border-white bg-white/60' : 'border-purple-500/30 bg-[#0d0524]/80'}`}
-              >
-                {lightMode ? '☀️' : '🌙'}
-              </button>
-
-              <button
-                onClick={() => showToast('Welcome back! 👋')}
-                className={`flex h-14 items-center gap-2 rounded-full border px-4 ${lightMode ? 'border-white bg-white/60' : 'border-purple-500/30 bg-[#0d0524]/80'}`}
-              >
-                <span className="text-xl">👤</span>
-                <span className={`hidden text-sm font-bold sm:inline ${lightMode ? 'text-[#172c57]' : 'text-white'}`}>
-                  {localStorage.getItem('user_name') || 'Student'}
-                </span>
-              </button>
-            </div>
-          </header>
-
           {/* Heading */}
           <div className="mb-6 flex items-center justify-between px-2">
             <div className="flex items-center gap-5">
@@ -252,7 +142,7 @@ function Schedule() {
           {/* ═══ STATS ═══ */}
           <section className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {/* Total */}
-            <div className={`flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg ${lightMode ? 'border-blue-100 bg-gradient-to-br from-white to-blue-50' : 'border-blue-500/30 bg-gradient-to-br from-blue-900/50 to-blue-800/30'}`}>
+            <div className={`interactive-card flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg backdrop-blur-xl ${lightMode ? 'border-blue-100 bg-gradient-to-br from-white/90 to-blue-50/90' : 'border-blue-500/30 bg-gradient-to-br from-blue-900/50 to-blue-800/30'}`}>
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-2xl text-white shadow-lg">
                 ▣
               </div>
@@ -268,7 +158,7 @@ function Schedule() {
             </div>
 
             {/* Pending */}
-            <div className={`flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg ${lightMode ? 'border-orange-100 bg-gradient-to-br from-white to-orange-50' : 'border-orange-500/30 bg-gradient-to-br from-orange-900/50 to-orange-800/30'}`}>
+            <div className={`interactive-card flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg backdrop-blur-xl ${lightMode ? 'border-orange-100 bg-gradient-to-br from-white/90 to-orange-50/90' : 'border-orange-500/30 bg-gradient-to-br from-orange-900/50 to-orange-800/30'}`}>
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-500 text-2xl text-white shadow-lg">
                 ◷
               </div>
@@ -284,7 +174,7 @@ function Schedule() {
             </div>
 
             {/* Completed */}
-            <div className={`flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg ${lightMode ? 'border-green-100 bg-gradient-to-br from-white to-green-50' : 'border-green-500/30 bg-gradient-to-br from-green-900/50 to-green-800/30'}`}>
+            <div className={`interactive-card flex min-h-[130px] items-center gap-4 rounded-2xl border p-5 shadow-lg backdrop-blur-xl ${lightMode ? 'border-green-100 bg-gradient-to-br from-white/90 to-green-50/90' : 'border-green-500/30 bg-gradient-to-br from-green-900/50 to-green-800/30'}`}>
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-2xl text-white shadow-lg">
                 ✓
               </div>
@@ -301,7 +191,7 @@ function Schedule() {
           </section>
 
           {/* ═══ PENDING PANEL ═══ */}
-          <section className={`mb-4 rounded-2xl border p-6 shadow-lg ${lightMode ? 'border-purple-200 bg-white/80' : 'border-purple-500/30 bg-[#0d0524]/80'}`}>
+          <section className={`interactive-card mb-4 rounded-2xl border p-6 shadow-lg backdrop-blur-xl ${lightMode ? 'border-purple-200 bg-white/80' : 'border-purple-500/30 bg-[#0d0524]/80'}`}>
             <div className="mb-4 flex items-center gap-4">
               <div className={`flex h-11 w-11 items-center justify-center rounded-xl text-xl ${lightMode ? 'bg-white shadow' : 'bg-purple-500/20 text-purple-300'}`}>
                 ▤
@@ -311,7 +201,7 @@ function Schedule() {
               </h3>
               <button
                 onClick={() => setShowModal(true)}
-                className={`ml-auto rounded-full border px-4 py-2 text-sm font-bold transition hover:scale-105 ${lightMode ? 'border-blue-200 bg-white text-blue-600' : 'border-purple-500/40 bg-purple-500/10 text-purple-300'}`}
+                className={`shine-button relative ml-auto rounded-full border px-4 py-2 text-sm font-bold transition hover:scale-105 ${lightMode ? 'border-blue-200 bg-white text-blue-600' : 'border-transparent bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'}`}
               >
                 ＋ Add Task
               </button>
@@ -339,7 +229,7 @@ function Schedule() {
           </section>
 
           {/* ═══ COMPLETED PANEL ═══ */}
-          <section className={`rounded-2xl border p-6 shadow-lg ${lightMode ? 'border-green-200 bg-gradient-to-br from-white to-green-50' : 'border-green-500/30 bg-gradient-to-br from-green-900/30 to-[#0d0524]/80'}`}>
+          <section className={`interactive-card rounded-2xl border p-6 shadow-lg backdrop-blur-xl ${lightMode ? 'border-green-200 bg-gradient-to-br from-white/90 to-green-50/90' : 'border-green-500/30 bg-gradient-to-br from-green-900/30 to-[#0d0524]/80'}`}>
             <div className="mb-4 flex items-center gap-4">
               <div className={`flex h-11 w-11 items-center justify-center rounded-xl text-xl ${lightMode ? 'bg-white shadow' : 'bg-green-500/20 text-green-300'}`}>
                 ✓
@@ -368,7 +258,6 @@ function Schedule() {
             )}
           </section>
         </main>
-      </div>
 
       {/* ═══ MODAL — Add Task ═══ */}
       {showModal && (
@@ -378,7 +267,7 @@ function Schedule() {
         >
           <form
             onSubmit={handleAddTask}
-            className={`w-full max-w-md rounded-2xl border p-7 ${lightMode ? 'border-purple-200 bg-white' : 'border-purple-500/40 bg-[#0d0524]'}`}
+            className={`interactive-card w-full max-w-md rounded-2xl border p-7 backdrop-blur-xl ${lightMode ? 'border-purple-200 bg-white/95' : 'border-purple-500/40 bg-[#0d0524]/95'}`}
           >
             <h3 className={`mb-5 text-xl font-bold ${lightMode ? 'text-[#142a57]' : 'text-white'}`}>
               ✨ Add a new task
@@ -403,13 +292,13 @@ function Schedule() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className={`rounded-xl px-4 py-2.5 text-sm font-bold ${lightMode ? 'bg-gray-100 text-gray-600' : 'bg-purple-500/20 text-purple-300'}`}
+                className={`shine-button relative rounded-xl px-4 py-2.5 text-sm font-bold ${lightMode ? 'bg-gray-100 text-gray-600' : 'bg-purple-500/20 text-purple-300'}`}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-500/40"
+                className="shine-button relative rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-500/40 transition hover:scale-105 hover:shadow-purple-500/60"
               >
                 Add Task
               </button>
@@ -431,7 +320,7 @@ function Schedule() {
 // ═══ Task Row Component ═══
 function TaskRow({ task, lightMode, onToggle, onDelete }) {
   return (
-    <div className={`flex items-center gap-3 rounded-xl border p-4 ${lightMode ? 'border-gray-200 bg-white' : 'border-purple-500/20 bg-purple-500/5'}`}>
+    <div className={`interactive-card flex items-center gap-3 rounded-xl border p-4 backdrop-blur-xl ${lightMode ? 'border-gray-200 bg-white/90' : 'border-purple-500/20 bg-purple-500/5'}`}>
       <input
         type="checkbox"
         checked={task.done}
@@ -448,7 +337,7 @@ function TaskRow({ task, lightMode, onToggle, onDelete }) {
       </div>
       <button
         onClick={onDelete}
-        className={`rounded-lg px-3 py-1.5 text-sm transition hover:scale-110 ${lightMode ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-red-500/20 text-red-300 hover:bg-red-500/30'}`}
+        className={`shine-button relative rounded-lg px-3 py-1.5 text-sm transition hover:scale-110 ${lightMode ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-red-500/20 text-red-300 hover:bg-red-500/30'}`}
       >
         ✕
       </button>

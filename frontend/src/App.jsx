@@ -15,6 +15,7 @@ import TaskDetail from './pages/TaskDetail'
 import Exam from './pages/Exam'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import MainLayout from './layouts/MainLayout'
 
 function App() {
   return (
@@ -26,18 +27,18 @@ function App() {
         <Route path="/profile" element={<ProfileSetup />} />
 
         {/* ═══ Main ═══ */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/progress" element={<Progress />} />
-        <Route path="/subjects" element={<Subjects />} />
-        <Route path="/pomodoro" element={<Pomodoro />} />
-
-        {/* ═══ Chapters ═══ */}
-        <Route path="/chapters" element={<Chapters />} />
-        <Route path="/chapter/:id" element={<ChapterDetail />} />
-        <Route path="/task/:id" element={<TaskDetail />} />
+        <Route element={<MainLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/progress" element={<Progress />} />
+          <Route path="/subjects" element={<Subjects />} />
+          <Route path="/pomodoro" element={<Pomodoro />} />
+          <Route path="/chapters" element={<Chapters />} />
+          <Route path="/chapter/:id" element={<ChapterDetail />} />
+          <Route path="/task/:id" element={<TaskDetail />} />
+        </Route>
 
         {/* ═══ Exam ═══ */}
         <Route path="/exam/:chapterId/:topicId" element={<Exam />} />

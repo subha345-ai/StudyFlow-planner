@@ -13,7 +13,6 @@ function Search() {
   const [subjects, setSubjects] = useState([])
   const [userTasks, setUserTasks] = useState([])
   const navigate = useNavigate()
-  const userName = localStorage.getItem('user_name') || 'Student'
   const userId = localStorage.getItem('user_id')
 
   // ═══ Fetch data ═══
@@ -62,12 +61,6 @@ function Search() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('user_id')
-    localStorage.removeItem('user_name')
-    navigate('/')
   }
 
   // ═══ Quick searches ═══
@@ -156,123 +149,12 @@ function Search() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030b1e] text-[#eef5ff]"
-      style={{
-        backgroundImage:
-          'radial-gradient(ellipse at 80% 5%, #182c633d, transparent 35%), radial-gradient(ellipse at 80% 80%, #40136b25, transparent 30%)',
-      }}
-    >
+    <div className="dashboard-shell water-flow-enabled relative isolate min-h-screen bg-transparent font-inter text-[#eef5ff]">
 
-      {/* ═══ NAVBAR ═══ */}
-      <header className="sticky top-0 z-30 border-b border-[#142d53] bg-[#06122c]/95 backdrop-blur px-4 py-3 sm:px-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#147dff] to-[#6336ef] text-xl shadow-lg shadow-blue-500/30">
-              📚
-            </div>
-            <h1 className="text-lg font-extrabold sm:text-xl">
-              Study<span className="text-[#388fff]">Flow</span>
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#18345d] bg-[#081a38] text-[#b7d1ff] transition hover:scale-110 sm:h-10 sm:w-10">
-              🔔
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-pink-500" />
-            </button>
-
-            <div className="hidden items-center gap-2 rounded-full border border-[#18345d] bg-[#081a38] px-3 py-1.5 sm:flex">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#9162ff] to-[#143f87] text-sm">
-                👤
-              </span>
-              <span className="text-sm font-semibold text-[#eaf3ff]">{userName}</span>
-            </div>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-300 transition hover:bg-red-500/20 sm:gap-2 sm:px-4 sm:text-sm"
-            >
-              🚪 <span className="hidden sm:inline">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex">
-
-        {/* ═══ SIDEBAR (Desktop) ═══ */}
-        <aside className="sticky top-[65px] hidden h-[calc(100vh-65px)] w-60 shrink-0 border-r border-[#142d53] bg-gradient-to-b from-[#06122c] to-[#081632] p-4 lg:block">
-          <nav className="space-y-2">
-            {[
-              { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-              { icon: '🔍', label: 'Search', path: '/search', active: true },
-              { icon: '📅', label: 'Schedule', path: '/schedule' },
-              { icon: '✅', label: 'Tasks', path: '/tasks' },
-              { icon: '⏱️', label: 'Pomodoro', path: '/pomodoro' },
-              { icon: '📊', label: 'Progress', path: '/progress' },
-              { icon: '📚', label: 'Subjects', path: '/subjects' },
-              { icon: '🎓', label: 'Chapters', path: '/chapters' },
-            ].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(item.path)}
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium transition ${
-                  item.active
-                    ? 'bg-gradient-to-r from-[#128fff] to-[#382be4] text-white shadow-lg shadow-blue-500/30'
-                    : 'text-[#b8cbed] hover:bg-[#10264b] hover:text-white'
-                }`}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="absolute bottom-6 left-4 right-4">
-            <div className="rounded-2xl border border-[#21498b] bg-gradient-to-br from-[#0a2146] to-[#14164c] p-4">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">🌱</span>
-                <div>
-                  <p className="text-xs font-bold text-[#80dfff]">Better Learning</p>
-                  <p className="text-xs text-[#80dfff]/80">Brighter Future</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* ═══ MAIN ═══ */}
-        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-
-          {/* ═══ MOBILE MENU ═══ */}
-          <div className="mb-4 flex gap-2 overflow-x-auto pb-1 lg:hidden">
-            {[
-              { icon: '🏠', label: 'Home', path: '/dashboard' },
-              { icon: '🔍', label: 'Search', path: '/search', active: true },
-              { icon: '📅', label: 'Schedule', path: '/schedule' },
-              { icon: '✅', label: 'Tasks', path: '/tasks' },
-              { icon: '⏱️', label: 'Pomodoro', path: '/pomodoro' },
-              { icon: '📊', label: 'Progress', path: '/progress' },
-              { icon: '📚', label: 'Subjects', path: '/subjects' },
-              { icon: '🎓', label: 'Chapters', path: '/chapters' },
-            ].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(item.path)}
-                className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition ${
-                  item.active
-                    ? 'bg-gradient-to-r from-[#128fff] to-[#382be4] text-white shadow-md'
-                    : 'border border-[#18345d] bg-[#081a38] text-[#b8cbed]'
-                }`}
-              >
-                <span>{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
+      <main className="min-w-0 p-4 sm:p-6 lg:p-8">
 
           {/* ═══ HERO ═══ */}
-          <section className="mb-5 flex items-center gap-5 rounded-3xl border border-[#1b3b6c] bg-gradient-to-r from-[#071934] via-[#08152f] to-[#111747] p-5 sm:p-6">
+          <section className="interactive-card dashboard-reveal mb-5 flex items-center gap-5 rounded-3xl border border-[#1b3b6c] bg-gradient-to-r from-[#071934]/90 via-[#08152f]/90 to-[#111747]/90 p-5 shadow-xl shadow-blue-950/20 backdrop-blur-xl sm:p-6">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#04b9ff] to-[#4b31ff] text-2xl shadow-[0_0_35px_#087cff55] sm:h-16 sm:w-16 sm:text-3xl">
               🔍
             </div>
@@ -298,7 +180,7 @@ function Search() {
           {/* ═══ SEARCH FORM ═══ */}
           <form
             onSubmit={handleSearch}
-            className="mb-6 rounded-3xl border border-[#304e92] bg-gradient-to-br from-[#081a37] via-[#07152f] to-[#0b1737] p-5 shadow-[0_0_25px_#3a31ff12] sm:p-6"
+            className="interactive-card mb-6 rounded-3xl border border-[#304e92] bg-gradient-to-br from-[#081a37]/90 via-[#07152f]/90 to-[#0b1737]/90 p-5 shadow-[0_0_25px_#3a31ff12] backdrop-blur-xl sm:p-6"
           >
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
               {/* Category */}
@@ -342,7 +224,7 @@ function Search() {
                 <button
                   type="submit"
                   disabled={loading || !query.trim()}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#5299ff] bg-gradient-to-r from-[#168dff] via-[#4135ff] to-[#813aff] py-3 text-sm font-bold text-white shadow-[0_0_20px_#346bff40] transition hover:-translate-y-0.5 hover:shadow-[0_0_28px_#346bff80] disabled:opacity-50 disabled:hover:translate-y-0"
+                  className="shine-button relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 py-3 text-sm font-bold text-white shadow-[0_0_20px_#346bff40] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_0_28px_#346bff80] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
                 >
                   {loading ? (
                     <>
@@ -366,7 +248,7 @@ function Search() {
                   key={i}
                   type="button"
                   onClick={() => { setQuery(q.label); setSearchBy('subject') }}
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition hover:-translate-y-0.5 sm:gap-2 sm:px-4 ${q.color}`}
+                  className={`shine-button relative flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition hover:-translate-y-0.5 sm:gap-2 sm:px-4 ${q.color}`}
                 >
                   <span className="text-sm sm:text-base">{q.icon}</span>
                   {q.label}
@@ -377,7 +259,7 @@ function Search() {
 
           {/* ═══ RESULTS ═══ */}
           {searched && (
-            <div className="mb-8 rounded-3xl border border-[#214679] bg-[#071831] p-5 sm:p-6">
+            <div className="interactive-card mb-8 rounded-3xl border border-[#214679] bg-[#071831]/90 p-5 shadow-xl shadow-blue-950/20 backdrop-blur-xl sm:p-6">
               <h2 className="mb-4 flex items-center gap-3 text-lg font-bold sm:text-xl">
                 📊 Results
                 <span className="rounded-full bg-[#168bff]/20 px-3 py-1 text-sm text-[#79baff]">
@@ -408,7 +290,7 @@ function Search() {
                   {results.map((item, index) => (
                     <div
                       key={index}
-                      className="rounded-2xl border border-[#1b3b6c] bg-[#081a37] p-4 transition hover:border-[#248dff] hover:shadow-[0_0_23px_#147aff1c] sm:p-5"
+                      className="interactive-card rounded-2xl border border-[#1b3b6c] bg-[#081a37]/90 p-4 backdrop-blur-xl sm:p-5"
                     >
                       {searchBy === 'student' && (
                         <>
@@ -484,7 +366,7 @@ function Search() {
                 <div
                   key={i}
                   onClick={() => setActiveCard(activeCard === card.id ? null : card.id)}
-                  className={`group relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br p-5 transition hover:-translate-y-1 ${acc.card} ${acc.bg} ${
+                  className={`interactive-card group relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br p-5 ${acc.card} ${acc.bg} ${
                     activeCard === card.id ? 'ring-2 ring-[#248dff]' : ''
                   }`}
                 >
@@ -517,7 +399,7 @@ function Search() {
 
           {/* 📖 Popular Subjects */}
           {activeCard === 'subjects' && (
-            <div className="mt-6 rounded-2xl border border-[#0869a4] bg-[#071a38] p-5 shadow-lg sm:p-6">
+            <div className="interactive-card mt-6 rounded-2xl border border-[#0869a4] bg-[#071a38]/90 p-5 shadow-lg backdrop-blur-xl sm:p-6">
               <h3 className="mb-4 text-lg font-bold text-[#d9f6ff]">📖 Popular Subjects</h3>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {subjects.map((sub, i) => (
@@ -528,7 +410,7 @@ function Search() {
                       setQuery(sub)
                       handleSearch({ preventDefault: () => {} })
                     }}
-                    className="rounded-xl border border-[#1b3b6c] bg-[#081a37] p-3 text-left transition hover:border-[#248dff] hover:bg-[#0c2042] sm:p-4"
+                    className="shine-button relative rounded-xl border border-[#1b3b6c] bg-[#081a37] p-3 text-left transition hover:border-[#248dff] hover:bg-[#0c2042] sm:p-4"
                   >
                     <div className="mb-2 text-xl sm:text-2xl">📘</div>
                     <p className="text-xs font-semibold text-[#eef5ff] sm:text-sm">{sub}</p>
@@ -540,7 +422,7 @@ function Search() {
 
           {/* 👥 Study Strategies */}
           {activeCard === 'groups' && (
-            <div className="mt-6 rounded-2xl border border-[#5635a8] bg-[#0d1738] p-5 shadow-lg sm:p-6">
+            <div className="interactive-card mt-6 rounded-2xl border border-[#5635a8] bg-[#0d1738]/90 p-5 shadow-lg backdrop-blur-xl sm:p-6">
               <h3 className="mb-4 text-lg font-bold text-[#eef5ff]">👥 Study Strategies</h3>
               <div className="space-y-3">
                 {[
@@ -549,7 +431,7 @@ function Search() {
                   { topic: 'Chemistry', strategy: 'Memorize reactions + periodic table', priority: 'Medium' },
                   { topic: 'English', strategy: 'Read 20 min daily + write essays', priority: 'Medium' },
                 ].map((g, i) => (
-                  <div key={i} className="flex flex-wrap items-center gap-3 rounded-xl border border-[#1b3b6c] bg-[#081a37] p-3 sm:p-4">
+                  <div key={i} className="interactive-card flex flex-wrap items-center gap-3 rounded-xl border border-[#1b3b6c] bg-[#081a37] p-3 sm:p-4">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#9b42ff] to-[#d946ef] text-sm font-bold text-white sm:h-10 sm:w-10">
                       {i + 1}
                     </div>
@@ -572,7 +454,7 @@ function Search() {
 
           {/* ✨ Smart Recommendations */}
           {activeCard === 'recommend' && (
-            <div className="mt-6 rounded-2xl border border-[#087d91] bg-[#061d37] p-5 shadow-lg sm:p-6">
+            <div className="interactive-card mt-6 rounded-2xl border border-[#087d91] bg-[#061d37]/90 p-5 shadow-lg backdrop-blur-xl sm:p-6">
               <h3 className="mb-4 text-lg font-bold text-[#eef5ff]">✨ Smart Recommendations</h3>
 
               {/* Progress */}
@@ -638,8 +520,7 @@ function Search() {
               )}
             </div>
           )}
-        </main>
-      </div>
+      </main>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
