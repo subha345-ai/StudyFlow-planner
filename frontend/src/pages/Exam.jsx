@@ -20,8 +20,9 @@ function Exam() {
   const [submitting, setSubmitting] = useState(false)
   const [results, setResults] = useState(null)
   const [error, setError] = useState('')
-  const [timeLeft, setTimeLeft] = useState(20 * 60) // ⏱️ 20 min
+  const [timeLeft, setTimeLeft] = useState(20 * 60)
   const [autoSubmitted, setAutoSubmitted] = useState(false)
+
   const navigate = useNavigate()
   const userId = localStorage.getItem('user_id')
   const timerRef = useRef(null)
@@ -31,9 +32,6 @@ function Exam() {
   const passMark = examType === 'final' ? 70 : 90
   const TOTAL_TIME = 20 * 60
 
-  // ═══════════════════════════════════════════
-  // FETCH QUESTIONS
-  // ═══════════════════════════════════════════
   useEffect(() => {
     if (!userId) {
       navigate('/')
@@ -52,6 +50,7 @@ function Exam() {
           topic: topicName,
           num_questions: questionCount,
         })
+
         setQuestions(res.data.questions || [])
       } catch (err) {
         console.error(err)
@@ -70,13 +69,9 @@ function Exam() {
     }
   }, [questions])
 
-  // ═══════════════════════════════════════════
-  // ⭐ AUTO POMODORO START — when exam loads
-  // ═══════════════════════════════════════════
   useEffect(() => {
     if (loading || questions.length === 0 || results) return
 
-    // Save to localStorage → Dashboard e live dekhbe
     try {
       localStorage.setItem(POMODORO_KEY, JSON.stringify({
         timer: TOTAL_TIME,
@@ -90,9 +85,6 @@ function Exam() {
     }
   }, [loading, questions.length, results])
 
-  // ═══════════════════════════════════════════
-  // ⏱️ TIMER — 20 minutes countdown
-  // ═══════════════════════════════════════════
   useEffect(() => {
     if (loading || questions.length === 0 || results) return
 
@@ -109,20 +101,20 @@ function Exam() {
     return () => clearInterval(timerRef.current)
   }, [loading, questions.length, results])
 
-  // ═══════════════════════════════════════════
-  // ⏰ AUTO-SUBMIT when timer hits 0
-  // ═══════════════════════════════════════════
   useEffect(() => {
-    if (timeLeft === 0 && !results && !submitting && questions.length > 0 && !submittedRef.current) {
+    if (
+      timeLeft === 0 &&
+      !results &&
+      !submitting &&
+      questions.length > 0 &&
+      !submittedRef.current
+    ) {
       submittedRef.current = true
       setAutoSubmitted(true)
       handleSubmit(true)
     }
   }, [timeLeft])
 
-  // ═══════════════════════════════════════════
-  // 🛑 STOP POMODORO when results ready
-  // ═══════════════════════════════════════════
   useEffect(() => {
     if (results) {
       try {
@@ -139,9 +131,6 @@ function Exam() {
     }
   }, [results])
 
-  // ═══════════════════════════════════════════
-  // TIMER FORMAT
-  // ═══════════════════════════════════════════
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60)
     const sec = seconds % 60
@@ -155,16 +144,17 @@ function Exam() {
   }
 
   const handleNext = () => {
-    if (currentQ < questions.length - 1) setCurrentQ(currentQ + 1)
+    if (currentQ < questions.length - 1) {
+      setCurrentQ(currentQ + 1)
+    }
   }
 
   const handlePrev = () => {
-    if (currentQ > 0) setCurrentQ(currentQ - 1)
+    if (currentQ > 0) {
+      setCurrentQ(currentQ - 1)
+    }
   }
 
-  // ═══════════════════════════════════════════
-  // SUBMIT — with auto-submit support
-  // ═══════════════════════════════════════════
   const handleSubmit = async (isAuto = false) => {
     if (submitting || results) return
 
@@ -178,6 +168,7 @@ function Exam() {
 
     try {
       let correct = 0
+
       const detailedResults = questions.map((q, i) => {
         const isCorrect = answers[i] === q.answer
         if (isCorrect) correct++
@@ -231,7 +222,6 @@ function Exam() {
   }
 
   const handleBack = () => {
-    // Stop pomodoro on exit
     try {
       localStorage.setItem(POMODORO_KEY, JSON.stringify({
         timer: 25 * 60,
@@ -249,7 +239,6 @@ function Exam() {
     }
   }
 
-  // ═══ Loading ═══
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -264,7 +253,6 @@ function Exam() {
     )
   }
 
-  // ═══ Error ═══
   if (error || questions.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -284,12 +272,10 @@ function Exam() {
     )
   }
 
-  // ═══ Results ═══
   if (results) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="mx-auto max-w-3xl px-6">
-          {/* Auto-submit notice */}
           {results.autoSubmitted && (
             <div className="mb-4 rounded-xl border border-orange-300 bg-orange-50 p-4 text-center text-sm font-medium text-orange-700">
               ⏰ Time's up! Your test was submitted automatically.
@@ -303,7 +289,9 @@ function Exam() {
           }`}>
             <p className="text-6xl">{results.passed ? '🎉' : '💪'}</p>
             <h1 className="mt-4 text-3xl font-bold">
-              {results.passed ? (examType === 'final' ? 'Task Completed!' : 'Practice Passed!') : 'Keep Practicing!'}
+              {results.passed
+                ? (examType === 'final' ? 'Task Completed!' : 'Practice Passed!')
+                : 'Keep Practicing!'}
             </h1>
             <p className="mt-2 text-white/80">
               {results.passed
@@ -363,10 +351,12 @@ function Exam() {
                     </p>
                     <span className="text-2xl">{r.isCorrect ? '✅' : '❌'}</span>
                   </div>
+
                   <div className="mt-3 space-y-1">
                     {r.options.map((opt, oi) => {
                       const isUser = r.userAnswer === oi
                       const isCorrectAns = r.answer === oi
+
                       return (
                         <div
                           key={oi}
@@ -385,6 +375,7 @@ function Exam() {
                       )
                     })}
                   </div>
+
                   {r.explanation && (
                     <p className="mt-3 rounded-lg bg-white/70 p-3 text-sm italic text-gray-600">
                       💡 {r.explanation}
@@ -399,7 +390,6 @@ function Exam() {
     )
   }
 
-  // ═══ Question Page ═══
   const q = questions[currentQ]
   const progress = ((currentQ + 1) / questions.length) * 100
   const answeredCount = answers.filter(a => a !== -1).length
@@ -419,13 +409,18 @@ function Exam() {
     <div className="min-h-screen bg-gray-50">
       <header className="border-b bg-white px-6 py-4 shadow-sm">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
-          <button onClick={handleBack} className="text-sm font-medium text-gray-600 hover:text-blue-600">
+          <button
+            onClick={handleBack}
+            className="text-sm font-medium text-gray-600 hover:text-blue-600"
+          >
             ← Exit
           </button>
 
           <div className="flex items-center gap-3">
             <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-              examType === 'final' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+              examType === 'final'
+                ? 'bg-purple-100 text-purple-700'
+                : 'bg-blue-100 text-blue-700'
             }`}>
               {examType === 'final' ? '🔥 FINAL EXAM' : '📝 PRACTICE'}
             </span>
@@ -434,7 +429,6 @@ function Exam() {
             </span>
           </div>
 
-          {/* ⏱️ TIMER */}
           <div className={`flex items-center gap-2 rounded-2xl border-2 bg-white px-4 py-2 font-mono text-lg font-bold shadow-sm ${timerColor} ${
             timeLeft <= 60 ? 'animate-pulse' : ''
           }`}>
@@ -465,7 +459,6 @@ function Exam() {
       </div>
 
       <main className="mx-auto max-w-3xl px-6 py-8">
-        {/* Warning when time < 5 min */}
         {timeLeft <= 300 && timeLeft > 0 && (
           <div className="mb-4 rounded-xl border border-orange-300 bg-orange-50 p-3 text-center text-sm font-medium text-orange-700">
             ⚠️ Only {formatTime(timeLeft)} left! Hurry up!
@@ -476,9 +469,7 @@ function Exam() {
           <p className="text-sm font-medium text-gray-500">
             Question {currentQ + 1} of {questions.length}
           </p>
-          <p className="text-xs text-gray-400">
-            Pass: {passMark}%
-          </p>
+          <p className="text-xs text-gray-400">Pass: {passMark}%</p>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
@@ -489,6 +480,7 @@ function Exam() {
           <div className="mt-6 space-y-3">
             {q.options.map((opt, oi) => {
               const isSelected = answers[currentQ] === oi
+
               return (
                 <button
                   key={oi}
@@ -504,7 +496,9 @@ function Exam() {
                   }`}>
                     {String.fromCharCode(65 + oi)}
                   </div>
-                  <span className={`flex-1 ${isSelected ? 'font-medium text-blue-900' : 'text-gray-700'}`}>
+                  <span className={`flex-1 ${
+                    isSelected ? 'font-medium text-blue-900' : 'text-gray-700'
+                  }`}>
                     {opt}
                   </span>
                 </button>

@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
@@ -21,18 +22,20 @@
     overflow-x: hidden;
   }
 
-  /* Custom Scrollbar (Dark Theme) */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
+
   ::-webkit-scrollbar-track {
     background: #0a0428;
   }
+
   ::-webkit-scrollbar-thumb {
     background: #a855f7;
     border-radius: 4px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: #c084fc;
   }

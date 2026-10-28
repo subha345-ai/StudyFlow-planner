@@ -97,15 +97,15 @@ function MainLayout() {
                     <path d="m16 16 4.2 4.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                   </svg>
                 </label>
-              <input
-                id="topbar-search"
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                aria-label="Search dashboard tasks"
-                className="cyber-search-input"
-              />
+                <input
+                  id="topbar-search"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  aria-label="Search dashboard tasks"
+                  className="cyber-search-input"
+                />
                 <button type="button" className="filter-icon" aria-label="Search filters">
                   <span>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

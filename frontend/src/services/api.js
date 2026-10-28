@@ -1,5 +1,5 @@
-// src/services/api.js
-const BASE_URL =  'https://studyflow-planner.onrender.com';
+
+const BASE_URL = 'https://studyflow-planner.onrender.com';
 
 const API = {
   get: async (url) => {
@@ -8,10 +8,12 @@ const API = {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     });
+
     if (!res.ok) {
       const error = await res.json().catch(() => ({ error: 'Request failed' }));
       throw { response: { data: error } };
     }
+
     const data = await res.json();
     return { data };
   },
@@ -23,10 +25,12 @@ const API = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+
     if (!res.ok) {
       const error = await res.json().catch(() => ({ error: 'Request failed' }));
       throw { response: { data: error } };
     }
+
     const data = await res.json();
     return { data };
   },
@@ -38,10 +42,12 @@ const API = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+
     if (!res.ok) {
       const error = await res.json().catch(() => ({ error: 'Request failed' }));
       throw { response: { data: error } };
     }
+
     const data = await res.json();
     return { data };
   },
@@ -52,10 +58,12 @@ const API = {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     });
+
     if (!res.ok) {
       const error = await res.json().catch(() => ({ error: 'Request failed' }));
       throw { response: { data: error } };
     }
+
     const data = await res.json();
     return { data };
   },

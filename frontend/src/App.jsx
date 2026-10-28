@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -21,12 +22,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ═══ Auth ═══ */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProfileSetup />} />
 
-        {/* ═══ Main ═══ */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<Search />} />
@@ -40,11 +39,9 @@ function App() {
           <Route path="/task/:id" element={<TaskDetail />} />
         </Route>
 
-        {/* ═══ Exam ═══ */}
         <Route path="/exam/:chapterId/:topicId" element={<Exam />} />
         <Route path="/exam/task/:id" element={<Exam />} />
 
-        {/* ═══ Admin ═══ */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
