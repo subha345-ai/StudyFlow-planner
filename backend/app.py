@@ -37,7 +37,7 @@ CORS(
         "http://127.0.0.1:5173",
         "http://localhost:5174",
         "http://127.0.0.1:5174",
-        "https://studyflow-frontend.netlify.app",
+               "https://subha-studyflow.netlify.app",
     ],
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
