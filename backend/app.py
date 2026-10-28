@@ -37,6 +37,7 @@ CORS(
         "http://127.0.0.1:5173",
         "http://localhost:5174",
         "http://127.0.0.1:5174",
+        "https://studyflow-frontend.netlify.app",
     ],
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -53,7 +54,7 @@ app.register_blueprint(courses_bp)
 app.register_blueprint(chapters_bp)
 app.register_blueprint(tests_bp)
 app.register_blueprint(ai_bp)
-app.register_blueprint(admin_bp)   # 👈 ADMIN BP REGISTERED
+app.register_blueprint(admin_bp)   #  ADMIN BP REGISTERED
 
 # ═══════════════════════════════════════════════
 # HOME ROUTE
