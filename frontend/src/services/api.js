@@ -1,5 +1,5 @@
 // src/services/api.js
-const BASE_URL = '';
+const BASE_URL = L = 'https://studyflow-planner.onrender.com';
 
 const API = {
   get: async (url) => {
